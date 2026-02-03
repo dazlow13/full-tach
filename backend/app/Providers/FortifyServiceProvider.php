@@ -13,6 +13,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\RegisterResponse;
+
+use function Symfony\Component\String\s;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -21,7 +24,15 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->instance(RegisterResponse::class, instance: new class implements RegisterResponse {
+            public function toResponse($request)
+            {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Registration successful.'
+                ], status: 201);
+            }
+        });
     }
 
     /**
